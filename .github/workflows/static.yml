@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOOD MOON 369 | آلة حاسبة الذهب الفلكية</title>
+    
+    <!-- مكتبة Chart.js لإنشاء المخطط الخطي -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    
+    <!-- ==================== (CSS Code) ==================== -->
+    <style>
+        :root {
+            --color-dark: #000000;
+            --color-gold: #FFD700;
+            --color-light-gold: #FFECB3;
+            --color-red: #E74C3C;
+            --color-yellow-warn: #FFC300;
+            --color-up: #4CAF50;
+            --color-down: #F44336;
+            
+            --color-target-major: #FFEB3B;
+            --color-target-minor: #FF9800;
+        }
+        
+        body {
+            background-color: var(--color-dark);
+            /* تأثير النجوم والسدم الفضائية العميقة */
+            background-image: 
+                radial-gradient(circle at 75% 20%, rgba(255, 215, 0, 0.1) 10px, transparent 0),
+                radial-gradient(circle at 25% 80%, rgba(255, 255, 255, 0.08) 12px, transparent 0),
+                radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.4) 1px, transparent 0),
+                radial-gradient(circle at 90% 90%, rgba(255, 215, 0, 0.3) 1px, transparent 0),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 1px, transparent 0),
+                radial-gradient(circle at 30% 60%, rgba(255, 255, 255, 0.5) 1px, transparent 0),
+                radial-gradient(circle at 80% 40%, rgba(255, 215, 0, 0.4) 1px, transparent 0);
+
+            background-size: 500px 500px, 600px 600px, 400px 400px, 300px 300px, 500px 500px, 250px 250px, 350px 350px;
+            background-repeat: repeat;
+            
+            color: var(--color-gold);
+            font-family: 'Arial', sans-serif;
+            margin: 0; padding: 20px; direction: rtl; text-align: right;
+        }
+        
+        .main-header { text-align: center; padding-bottom: 30px; }
+        .title-text {
+            font-size: 3.5em; letter-spacing: 15px; text-transform: uppercase;
+            background: linear-gradient(135deg, var(--color-gold), #FF9800, var(--color-gold), #FFF8E1);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.6);
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .dashboard-container { display: flex; justify-content: space-around; gap: 20px; padding-top: 20px; }
+        .column {
+            flex: 1; padding: 20px; border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.5); box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            min-height: 500px;
+        }
+        
+        .space-glow {
+            box-shadow: 0 0 5px var(--color-light-gold), 0 0 10px rgba(255, 215, 0, 0.5);
+            padding: 10px; margin-bottom: 15px; border-radius: 5px;
+        }
+        
+        h2 { color: var(--color-gold); border-bottom: 2px solid var(--color-gold); padding-bottom: 10px; margin-top: 0; }
+        .moon-display { font-size: 3em; text-align: center; line-height: 1; }
+        
+        input[type="number"], input[type="password"] {
+            background-color: #333; color: var(--color-light-gold); border: 1px solid var(--color-gold);
+            padding: 10px; border-radius: 5px; margin-inline-end: 10px; width: 120px;
+        }
+        
+        button {
+            background-color: var(--color-gold); color: var(--color-dark); border: none;
+            padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover { background-color: var(--color-light-gold); }
+
+        .results-list { list-style-type: none; padding: 0; }
+        .warning-line { border-bottom: 2px dashed var(--color-yellow-warn); display: block; padding-bottom: 5px; margin-bottom: 5px;}
+        
+        .private-lock-box { text-align: center; padding: 40px 10px; border: 2px solid var(--color-gold); border-radius: 10px; margin-bottom: 20px; }
+        .private-lock-box p { color: var(--color-light-gold); }
+        
+        .astro-item { font-size: 1.2em; display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(255, 215, 0, 0.2); }
+        .astro-item strong { font-size: 1.5em; }
+        .astro-item span { display: none; }
+
+
+        .up-trend { color: var(--color-up); font-weight: bold; }
+        .down-trend { color: var(--color-down); font-weight: bold; }
+
+        /* تنسيقات الأهداف */
+        .target-major-up, .target-major-down { color: var(--color-target-major); }
+        .target-minor-up, .target-minor-down { color: var(--color-target-minor); }
+
+        /* تصميم كوكب زحل للمنتصف */
+        .saturn-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: rgba(210, 180, 140, 0.4);
+            z-index: 10;
+        }
+        .saturn-ring::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(30deg);
+            width: 250px;
+            height: 50px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 215, 0, 0.8);
+            z-index: -1;
+        }
+        #chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+            margin-bottom: 30px; /* مسافة للمخطط */
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-container { flex-direction: column; }
+            .column { min-height: auto; }
+        }
+    </style>
+    
+</head>
+<body>
+
+    <header class="main-header">
+        <h1 class="title-text">MOOD MOON 369</h1>
+    </header>
+
+    <main class="dashboard-container">
+        
+        <!-- العمود الأيسر: التقويمات المتعددة -->
+        <section class="column left-column">
+            <h2>التقويمات</h2>
+            <div id="calendar-gregorian" class="calendar-item astro-item space-glow"><strong>...</strong></div>
+            <div id="calendar-hijjri" class="calendar-item astro-item space-glow"><strong>...</strong></div>
+            <div id="calendar-julian" class="calendar-item astro-item space-glow"><strong>...</strong></div>
+            
+            <br>
+            <h2>منطق الاتجاه الشهري</h2>
+            <div id="trend-logic" class="space-glow">
+                <p>مستوى الافتتاح الشهري: (تحتاج لمصدر بيانات)</p>
+                <p><strong>حالة اليوم: <span id="current-day-trend">...</span></strong></p>
+            </div>
+        </section>
+
+        <!-- العمود المنتصف: مراحل القمر والمخطط (الشرط) -->
+        <section class="column center-column">
+            <!-- دوارات القمر (كما كانت في المنتصف) -->
+            <div class="moon-phases-container">
+                <div class="moon-display">
+                    <h2 style="text-align: center;">دوارات القمر مباشرة</h2>
+                    <p style="text-align: center; font-size: 1.5em;" id="moon-cycle">
+                        🌑 🌒 🌓 🌔 🌕 🌖 🌗 🌘
+                    </p>
+                    <p id="current-moon-icon" style="text-align: center; font-size: 1.2em;">...</p>
+                </div>
+            </div>
+
+            <h2 style="text-align: center;">مخطط سعر الذهب (XAU/USD)</h2>
+            
+            <!-- حاوية المخطط مع تصميم زحل في المنتصف -->
+            <div id="chart-container">
+                <canvas id="goldChart"></canvas>
+                <!-- ديكور كوكب زحل في منتصف المخطط -->
+                <div class="saturn-ring"></div>
+            </div>
+            
+            <!-- الآلة الحاسبة المالية (الحساب الخاص والمخفي) -->
+            <div class="calculator-box">
+                <!-- شاشة القفل -->
+                <div id="lock-screen" class="private-lock-box">
+                    <p>للوصول إلى حساب المستويات المالية الخاصة، أدخل كلمة المرور.</p>
+                    <input type="password" id="private-key" placeholder="كلمة المرور">
+                    <button onclick="unlockCalculator()">فتح الآلة الحاسبة</button>
+                </div>
+
+                <!-- الآلة الحاسبة الفعلية (مخفية في البداية) -->
+                <div id="private-calculator" class="space-glow" style="display: none;">
+                    <h2>حساب المستويات الخاصة</h2>
+                    <div class="input-group">
+                        <label for="price-input">أدخل السعر يدوياً:</label>
+                        <input type="number" id="price-input" placeholder="مثال: 3928">
+                        <button onclick="calculateLevels()">احسب المستويات</button>
+                    </div>
+                    <div id="results-display">
+                        <p>الأساس الثابت للنظام: 1800</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- العمود الأيمن: تفاصيل الوقت الفلكي -->
+        <section class="column right-column">
+            <h2>البيانات الفلكية الزمنية</h2>
+            <!-- تم إعادة القمر إلى هذا العمود أيضاً -->
+            <div id="astro-time" class="astro-item space-glow"><strong>...</strong></div>
+            <div id="astro-moon" class="astro-item space-glow"><strong>...</strong></div>
+            <div id="astro-zodiac" class="astro-item space-glow"><strong>...</strong></div>
+        </section>
+
+    </main>
+    
+    <!-- ==================== (JavaScript Code) ==================== -->
+    <script>
+        // الثوابت لخطوات الحساب كما طلبت
+        const TARGET_90 = 90;
+        const TARGET_45 = 45;
+        const ITERATIONS = 7;
+        const PRIVATE_KEY = "369";
+        
+        // أيام الصعود والهبوط
+        const DAYS_UP = [3, 5, 6, 10, 13, 15, 19, 20, 25, 30];
+        const DAYS_DOWN = [7, 9, 11, 12, 14, 16, 17, 18, 21, 23, 24, 27];
+
+        // ... (بقية دوال التحكم والحساب) ...
+
+        function unlockCalculator() {
+            const enteredKey = document.getElementById('private-key').value;
+            if (enteredKey === PRIVATE_KEY) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('private-calculator').style.display = 'block';
+            } else {
+                alert("كلمة المرور غير صحيحة.");
+            }
+        }
+        
+        function calculateLevels() {
+            const priceInput = document.getElementById('price-input');
+            const basePrice = parseFloat(priceInput.value);
+
+            if (isNaN(basePrice) || basePrice <= 0) {
+                document.getElementById('results-display').innerHTML = 
+                    '<p class="negative-target">الرجاء إدخال سعر صحيح وموجب.</p>';
+                return;
+            }
+
+            let resultsHTML = `
+                <h3>السعر الأساسي المدخل: ${basePrice.toFixed(2)}</h3>
+                <div style="text-align: center;">
+                    <h4>مستويات الصعود</h4>
+                    <ul class="results-list" style="text-align: right;">
+                        ${buildTargets(basePrice, true)}
+                    </ul>
+                    <h4>مستويات الهبوط <span class="negative-target">🔻</span></h4>
+                    <ul class="results-list" style="text-align: right;">
+                        ${buildTargets(basePrice, false)}
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('results-display').innerHTML = resultsHTML;
+        }
+
+        function buildTargets(startPrice, isAscending) {
+            let html = '';
+            
+            for (let i = 1; i <= ITERATIONS; i++) {
+                // الأهداف الـ 45 (Minor Targets)
+                const targetMinor = isAscending ? startPrice + (TARGET_45 * i) : startPrice - (TARGET_45 * i);
+                const classMinor = isAscending ? 'target-minor-up' : 'target-minor-down';
+                let listItemClassMinor = (i === ITERATIONS - 1) ? ' warning-line' : '';
+
+                // الأهداف الـ 90 (Major Targets)
+                const targetMajor = isAscending ? startPrice + (TARGET_90 * i) : startPrice - (TARGET_90 * i);
+                const classMajor = isAscending ? 'target-major-up' : 'target-major-down';
+                let listItemClassMajor = (i === ITERATIONS - 1) ? ' warning-line' : '';
+
+                // عرض الهدف الـ 45 (برتقالي)
+                html += `<li class="${classMinor} ${listItemClassMinor}">
+                            <span style="font-size: 0.8em;">(هدف فرعي)</span> <strong>${targetMinor.toFixed(2)}</strong>
+                        </li>`;
+                
+                // عرض الهدف الـ 90 (أصفر)
+                html += `<li class="${classMajor} ${listItemClassMajor}">
+                            <span style="font-size: 0.8em;">(هدف رئيسي)</span> <strong>${targetMajor.toFixed(2)}</strong>
+                        </li>`;
+            }
+            return html;
+        }
+
+
+        // =======================================================
+        // 3. وظيفة عرض وتحديث الزمن والمنطق الفلكي (محدثة)
+        // =======================================================
+        
+        // منطق تحديد البرج
+        function getZodiacSign(date) {
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+
+            if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "الدلو ♒";
+            if ((month === 2 && day >= 19) || (month === 3 && day <= 20)) return "الحوت ♓";
+            if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "الحمل ♈";
+            if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "الثور ♉";
+            if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return "الجوزاء ♊";
+            if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return "السرطان ♋";
+            if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "الأسد ♌";
+            if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "العذراء ♍";
+            if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "الميزان ♎";
+            if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return "العقرب ♏";
+            if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return "القوس ♐";
+            if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return "الجدي ♑";
+            return "غير محدد";
+        }
+
+        // دالة تحويل التاريخ إلى رقم اليوم اليولياني (Julian Day Number)
+        function toJulianDayNumber(date) {
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+
+            const a = Math.floor((14 - month) / 12);
+            const y = year + 4800 - a;
+            const m = month + 12 * a - 3;
+
+            return day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+        }
+
+
+        function updateTimeAndCalendars() {
+            const now = new Date();
+            const currentDay = now.getDate();
+
+            // 1. عرض الوقت
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const currentTime = now.toLocaleTimeString('ar-EG', timeOptions);
+            document.getElementById('astro-time').innerHTML = `<strong>${currentTime}</strong>`;
+
+            // 2. عرض التاريخ الميلادي
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const currentDate = now.toLocaleDateString('ar-EG', dateOptions);
+            document.getElementById('calendar-gregorian').innerHTML = `<strong>${currentDate}</strong>`;
+            
+            // 3. **التاريخ الهجري (إصلاح باستخدام تنسيق المتصفح Native)**
+            const hijriDateOptions = { year: 'numeric', month: 'long', day: 'numeric', calendar: 'islamic-umalqura' };
+            const hijriDate = now.toLocaleDateString('ar-SA', hijriDateOptions);
+            document.getElementById('calendar-hijjri').innerHTML = `<strong>${hijriDate}</strong>`;
+            
+            // 4. **البرج (يعمل)**
+            const zodiacSign = getZodiacSign(now);
+            document.getElementById('astro-zodiac').innerHTML = `<strong>${zodiacSign}</strong>`;
+
+            // 5. **التاريخ اليولياني (يعمل)**
+            const julianDayNumber = toJulianDayNumber(now);
+            document.getElementById('calendar-julian').innerHTML = `<strong>${julianDayNumber} JDN</strong>`;
+
+
+            // 6. حالة اليوم (صعود/هبوط)
+            const trendElement = document.getElementById('current-day-trend');
+            if (DAYS_UP.includes(currentDay)) {
+                trendElement.innerHTML = `يوم صاعد (اليوم: ${currentDay})`;
+                trendElement.className = 'up-trend';
+            } else if (DAYS_DOWN.includes(currentDay)) {
+                trendElement.innerHTML = `يوم هابط (اليوم: ${currentDay})`;
+                trendElement.className = 'down-trend';
+            } else {
+                trendElement.innerHTML = `يوم محايد (اليوم: ${currentDay})`;
+                trendElement.className = '';
+            }
+
+            // 7. عرض حالة القمر (تمت إعادتها)
+            const moonPhases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+            const moonPhaseNames = ['المحاق', 'الهلال المتزايد', 'التربيع الأول', 'الأحدب المتزايد', 'البدر', 'الأحدب المتناقص', 'التربيع الأخير', 'الهلال المتناقص'];
+            const moonIndex = Math.floor(currentDay / 3.7) % 8; 
+            document.getElementById('current-moon-icon').innerHTML = `القمر الحالي: ${moonPhases[moonIndex]} ${moonPhaseNames[moonIndex]}`;
+            document.getElementById('astro-moon').innerHTML = `<strong>${moonPhases[moonIndex]} ${moonPhaseNames[moonIndex]}</strong>`;
+        }
+
+        // =======================================================
+        // 4. وظيفة إنشاء المخطط (Chart.js)
+        // =======================================================
+        
+        let goldChart;
+        function createGoldChart() {
+            const ctx = document.getElementById('goldChart').getContext('2d');
+            
+            // بيانات افتراضية للمخطط الخطي (لأنه لا يمكن جلب بيانات حية)
+            const labels = ['اليوم 1', 'اليوم 2', 'اليوم 3', 'اليوم 4', 'اليوم 5', 'اليوم 6', 'اليوم 7'];
+            const data = [1900, 1925, 1910, 1940, 1930, 1950, 1965]; // سعر الذهب (افتراضي)
+
+            goldChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'سعر الذهب (XAU/USD - افتراضي)',
+                        data: data,
+                        borderColor: 'var(--color-gold)',
+                        backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointBackgroundColor: 'var(--color-yellow-warn)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: 'var(--color-light-gold)' } } },
+                    scales: {
+                        x: { ticks: { color: 'var(--color-light-gold)' }, grid: { color: 'rgba(255, 215, 0, 0.1)' } },
+                        y: { ticks: { color: 'var(--color-light-gold)' }, grid: { color: 'rgba(255, 215, 0, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        // =======================================================
+        // 5. وظيفة بدء التشغيل
+        // =======================================================
+
+        updateTimeAndCalendars();
+        setInterval(updateTimeAndCalendars, 1000); 
+        
+        window.onload = createGoldChart;
+
+    </script> 
+</body>
+</html>
